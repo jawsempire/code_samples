@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Browser Compatability -- POC</title>
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet"> 
+	<style>
+		body {
+			font-family: 'Roboto Condensed', sans-serif;
+		}
+
+		body ul {
+			list-style:none;
+		
+		}
+
+		ul li {
+			float:left;
+		}
+
+		.connector {
+			height:600px;
+			width:450px;
+			display:flex;
+			flex-wrap: wrap;
+		}
+		
+	</style>
+	
+
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+	<h2>Browser Compatability -- Proof of Concept</h2>
+
+	<div class="connector">
+		<!-- Displaying browser icons based on the truth values listed in a json file -->		
+		<div class=Pintrest></div> 
+		<div class=Twitter></div>
+		<div class=_101_Domain></div>
+	</div>
+
+	<script>
+	let connectors = ["Pintrest", "Twitter", "_101_Domain"];
+
+	$.getJSON('json/connector_compatibility.json', function(data) {
+
+		$.each(connectors, function(index, value){
+			$.each(data, function(index2, dataValue){
+					if (value == dataValue.name) {
+						$('.' + dataValue.name).append(`<div>
+							${dataValue.name}						
+							<div class="compatibility">
+							<ul>
+							${(dataValue.firefox) ? '<li id="firefox"><img src="firefox.png" alt="" /></li>': ''}
+							${(dataValue.chrome) ? '<li id="chrome"><img src="chrome.png" alt="" /></li>': ''}
+							${(dataValue.internetExplorer) ? '<li id="internetExplorer"><img src="ie.png" alt="" /></li>': ''}
+							${(dataValue.edge) ? '<li id="edge"><img src="edge.png" alt="" /></li>': ''}
+							${(dataValue.ios) ? '<li id="ios"><img src="ios.png" alt="" /></li>': ''}
+							${(dataValue.android) ? '<li id="android"><img src="android.png" alt="" /></li>': ''}
+							</ul>
+							</div>`);
+					}
+				});
+		});
+
+
+	}); //end getJson
+
+	</script>
+</body>
+</html>
+
+
+

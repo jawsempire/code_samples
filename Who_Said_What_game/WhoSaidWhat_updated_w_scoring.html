@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Who Said What?</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="jquery-ui.min.css">
+  <!--<link rel="stylesheet" href="/resources/demos/style.css">-->
+  <style>
+      body{
+          background-color: #f7ecb5;
+      }
+
+      .container{
+          border: 2px solid black;
+      }
+      .timer {
+
+
+          width: 128px;
+          height: 128px;
+          background: black;
+          border: 5px solid orange;
+          -moz-border-radius: 64px;
+          -webkit-border-radius: 64px;
+          border-radius: 64px;
+
+      }
+  .draggable{
+     width: 150px; height: 150px;  float: left; margin: 10px 10px 10px 0;
+      -webkit-transform: rotate(-7deg); /* Chrome, Safari, Opera */
+      transform: rotate(-7deg);
+
+    }
+
+    .draggable img {
+      border:3px solid orange;
+      box-shadow: 2px 2px 2px gray;
+      -webkit-box-shadow:2px 2px 2px gray;
+      -moz-box-shadow:2px 2px 4px orange;
+    }
+
+  .droppable {
+    width: 155px; height: 300px; padding: 0.5em; float: left; margin: 10px;
+    border: 1px solid #000000;
+
+    -moz-box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
+    -webkit-box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
+    box-shadow: inset 2px 2px 2px rgba(255, 255, 255, .4), inset -2px -2px 2px rgba(0, 0, 0, .4);
+
+
+
+  background-color: black;
+  }
+
+  .droppable p {
+    font-size: 1.30em;
+    color:white;
+  }
+
+  .playAgain {
+    background-color: black;
+    color:white;
+
+  }
+
+  #oneLeft {
+    /*background-color: purple;*/
+    /*-webkit-transform: rotate(-7deg); /* Chrome, Safari, Opera */
+    /*transform: rotate(-7deg);*/
+    position:absolute;
+    z-index: 5;
+  }
+  #twoLeft {
+    /*background-color: red;*/
+      position:absolute;
+      z-index: 3;
+      margin-left:75px;
+  }
+  #threeLeft{
+    /*background-color: green;*/
+      position:absolute;
+      z-index: 2;
+      margin-left:135px;
+  }
+
+  .noRotate{
+    -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+    transform: rotate(0deg);
+  }
+
+  #one {background-color: green;}
+    #two{
+      background-color: purple;
+    }
+    #three{
+    background-color: red;
+    }
+
+
+
+    .rewardLoop {
+        width:150px;
+        height:400px;
+        background-color: gray;
+        margin-left:70%;
+    }
+
+    .miniboxes {
+
+      width:150px;
+      height:90px;
+      background-color: yellow;
+      /*margin-top:-300px;*/
+      z-index: 3;
+      position:absolute;
+      opacity:0;
+
+    }
+
+    .title {
+      color:orange;
+      text-shadow: 1px 1px 3px black;
+      font-size:2.5em;
+    }
+
+
+    .fadeNSlide {
+        margin-top:300px;
+        opacity:1;
+        animation-name: slideDown;
+        animation-duration: 4s;
+    }
+
+    @keyframes slideDown {
+      from {
+              margin-top: 0px;
+              opacity:0;
+          }
+      to {
+          margin-top: 300px;
+          opacity:1;
+      }
+  }
+
+.circles {
+  float:left;
+  margin-right:3px;
+  border-radius: 50%;
+	width: 45px;
+	height: 45px;
+  background-color:black;
+  opacity:0.3;
+}
+
+
+
+  </style>
+
+
+  <script src="jquery-3.1.1.min.js"></script>
+  <!-- <script src="../../js/lot_game.js"></script> -->
+    <script src="angular.min.js"></script>
+
+    <script src="jquery-ui.min.js"></script>
+
+
+
+
+</head>
+<body ng-app="app" >
+  <!-- ng-controller="control as game" -->
+
+<div class="container">
+     <div class="row">
+         <div class="col-lg-12">
+             <nav class="navbar navbar-inverse">
+                 <div class="container-fluid">
+                     <div class="navbar-header">
+                         <a class="navbar-brand" href="#">Wolfe Castle Home</a>
+                     </div>
+                     <ul class="nav navbar-nav">
+                         <li class="active"><a href="#">Games</a></li>
+
+                     </ul>
+                 </div>
+             </nav>
+         </div>
+     </div>
+     <div class="row">
+         <div class="col-lg-12 text-center title">WHO SAID WHAT?</div>
+     </div>
+     <div class="row">
+         <div class="col-lg-12 text-center"><h5><em>Click and drag each face to the matching quote. Timer starts when you drop the first picture</em></h5></div>
+     </div>
+
+
+    <div class="row">
+        <div class="col-lg-3" >
+            <div id="oneLeft" class="draggable ui-widget-content" ng-mousedown="game.startCountDown()">
+
+                <p value='purple square' ></p>
+            </div>
+
+            <div id="twoLeft" class="draggable ui-widget-content" >
+                <p value='red square'></p>
+            </div>
+
+            <div id="threeLeft" class="draggable ui-widget-content" >
+                <p value='green square'></p>
+            </div>
+
+            <!--<div class="btn-group">-->
+            <!--<button class="btn-lg" ng-click="game.startCountDown()">Start</button>-->
+        <!-- ng-click="game.timer = 7"</div>-->
+            <button class="btn-lg playAgain"  onclick="startRound()" ng-click='clickMe()' style="margin: 245px 0px 0px 5px">Next Round</button>
+<!--ng-click="game.timer=7"-->
+        </div>
+
+
+        <div class="col-lg-6">
+
+            <div id="oneRight" class="droppable ui-widget-header">
+                <!-- <p value='green square' ></p> -->
+
+            </div>
+
+            <div id="twoRight" class="droppable ui-widget-header">
+                <p value='purple square'></p>
+            </div>
+
+            <div id="threeRight" class="droppable ui-widget-header">
+                <p value='red square'></p>
+            </div>
+        </div>
+
+
+        <div class="col-lg-3">
+
+            <div class="timer" style="color:white; font-size:5em;">&nbsp;&nbsp;<quote></quote><br>Round</div>
+            <!--<div class='rewardLoop' >-->
+                <!--<div id='first' class="miniboxes" >-->
+
+                <!--</div>-->
+                <!--<div id='second' class="miniboxes">-->
+
+                <!--</div>-->
+                <!--<div id='third' class="miniboxes" ng-class="fadeNSlide">-->
+
+                <!--</div>-->
+                <!--<div id='fourth' class="miniboxes" ng-class="fadeNSlide">-->
+
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+  <div class="row">
+      <div class="col-lg-3">
+      </div>
+      <div class="col-lg-8 scoreCircles" style='margin-left:45px;'>
+          <div class="circles"></div>
+          <div class="circles"> </div>
+          <div class="circles"></div>
+          <div class="circles"> </div>
+          <div class="circles"></div>
+          <div class="circles"> </div>
+          <div class="circles"></div>
+          <div class="circles"> </div>
+          <div class="circles"></div>
+          <div class="circles"> </div>
+      </div>
+
+  </div>
+</div>
+</body>
+
+
+<script>
+
+var correct = 0;
+
+// var app = angular.module("custom", []);
+// app.directive("quoteDir", function() {
+//
+//       return {
+//           template: "<h1>new quote</h1>"
+//
+//       };
+//
+//   });
+
+
+
+    angular.module("app", [])
+          .directive("quote", function() {
+
+            let round = 1;
+
+              return {
+                 template: round,
+
+
+              };
+
+          });
+
+
+
+
+//         .controller("control", function($interval) {
+//
+//             var game = this;
+//             game.timer =7;
+//
+//
+//           // .directive("quote", function() {
+//           //       return {
+//           //           template :
+//           //       };
+//           //   });
+//
+//
+//             game.startCountDown = function(){
+//
+//
+//                     $interval(function(){
+//                         game.timer == 0 ?  $interval.cancel(): game.timer--;
+//
+//                     },1000);
+//
+// //                    $interval.cancel();
+//
+//              };
+//
+//    }); //end controller
+
+   let  mainArr = [{
+            name: "<img src='images/leonardo.jpg' class='img' val='leonardo'/>",
+            value: 'leonardo',
+            image1: "<p val='leonardo'><em>For once you have tasted flight you will walk the earth with your eyes turned skywards, for there you have been and there you will long to return.</em></p>",
+            image2: "<p val='leonardo'><em>Simplicity is the ultimate sophistication.</em></p>"
+
+        }, {
+            name: "<img src='images/marktwain.jpg' class='img' val='markTwain'/>",
+            value: 'markTwain',
+            image1: "<p val='markTwain'<em>Whenever you find yourself on the side of the majority, it is time to pause and reflect.</em> </p>",
+            image2: "<p val='markTwain'><em>If you tell the truth, you don't have to remember anything.</em></p>"
+
+        }, {
+            name: "<img src='images/maya.jpg' class='img' val='mayaAngelou'/>",
+            value: 'mayaAngelou',
+            image1:"<p val='mayaAngelou'><em>The caged bird sings of freedom.</em></p>",
+            image2: "<p val='mayaAngelou'><em>If you don't like something, change it. If you can't change it, change your attitude.</em></p>"
+
+        }, {
+            name: "<img src='images/neo.jpg' class='img' val='neo'/>",
+            value: 'neo',
+            image1:"<p val='neo'><em>Are you sayin’ I can dodge bullets? </em></p>",
+            image2: "<p val='neo'><em>What is the Matrix?</em></p>"
+
+        }, {
+            name: "<img src='images/winston.jpg' class='img' val='winstonChurchill'/>",
+            value: 'winstonChurchill',
+            image1:"<p val='winstonChurchill'><em>If you're going through hell, keep going.</em></p>",
+            image2: "<p val='winstonChurchill'><em>Success consists of going from failure to failure without loss of enthusiasm.</em></p>"
+
+        }, {
+            name: "<img src='images/leia.jpg' class='img' val='princessLeia'/>",
+            value: 'princessLeia',
+            image1:"<p val='princessLeia'><em>Why, you stuck up, half-witted, scruffy-looking, Nerf-herder!</em></p>",
+            image2: "<p val='princessLeia'><em>Aren’t you a little short for a stormtrooper?</em></p>"
+
+        }, {
+            name: "<img src='images/indy.jpg' class='img' val='indianaJones'/>",
+            value: 'indianaJones',
+            image1:"<p val='indianaJones'><em>Snakes. Why’d it have to be snakes?</em></p>",
+            image2: "<p val='indianaJones'><em>You know what a cautious fellow I am</em></p>"
+        }, {
+          name: "<img src='images/harrytruman.jpg' class='img' val='harryTruman'/>",
+          value: 'harryTruman',
+          image1:"<p val='harryTruman'><em>It is amazing what you can accomplish if you do not care who gets the credit.</em></p>",
+          image2: "<p val='harryTruman'><em>If you can't convince them, confuse them.</em></p>"
+
+      }, {
+        name: "<img src='images/michelangelo.jpg' class='img' val='michelangelo'/>",
+        value: 'michelangelo',
+        image1:"<p val='michelangelo'><em>I saw the angel in the marble and carved until I set him free.</em></p>",
+        image2: "<p val='michelangelo'><em>If people knew how hard I had to work to gain my mastery, it would not seem so wonderful at all.</em></p>"
+    }, {
+      name: "<img src='images/drsuess.jpg' class='img' val='drSuess'/>",
+      value: 'drSuess',
+      image1:"<p val='drSuess' ><em>Today you are you! That is truer than true! There is no one alive who is you-er than you!</em></p>",
+      image2: "<p val='drSuess'><em>You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose.</em></p>"
+    }, {
+    name: "<img src='images/jane.jpg' class='img' val='janeAusten'/>",
+    value: 'janeAusten',
+    image1:"<p val='janeAusten'><em>A large income is the best recipe for happiness I ever heard of.</em></p>",
+    image2: "<p val='janeAusten'><em>I do not want people to be very agreeable, as it saves me the trouble of liking them a great deal.</em></p>"
+    }, {
+    name: "<img src='images/ali.jpg' class='img' val='ali'/>",
+    value: 'ali',
+    image1:"<p val='ali'><em>Float like a butterfly, sting like a bee.</em></p>",
+    image2: "<p val='ali'><em>I hated every minute of training, but I said, 'Don't quit. Suffer now and live the rest of your life as a champion.'</em></p>"
+    }
+
+    ];
+
+
+
+   let displayArrRight = [];
+   let rightImg;
+   let rightImgCompare = [];
+   let displayArr = [];
+
+//the parameter is an array of objects
+//index gets a random object in the array
+
+
+
+
+   function makeUniqueRandom(pics_) {
+
+     //each time this function is called, counter is reset
+     //SCOPE to the rescue
+     let counter = 0;
+
+     //TODO: Try a counter incremented to 3
+       while (counter < 3 ) {
+         let index = Math.floor(Math.random() * pics_.length);
+
+         //val is the object
+         let val = pics_[index];
+
+         if (!(displayArr.includes(val))) {
+              displayArr.push(val);
+              displayArrRight.push(findRandomPic(val));
+              console.log("success");
+              counter++;
+         }
+      }
+
+
+       checkonPics(pics_);
+        console.log("size is: " + displayArr.length);
+      return displayArr;
+    //  return val;
+   } //end makeUniqueRandom()
+
+   let counter = 0;
+
+   function checkonPics(pics_) {
+       counter++
+   }
+
+
+
+   function findRandomPic(face) {
+       //add more images as needed
+
+
+       let tempImageArr = [face.image1, face.image2];
+       let randomImg = Math.floor(Math.random() * tempImageArr.length);
+       return rightImg = tempImageArr[randomImg];
+   }
+
+   function shuffle(array) {
+       var currentIndex = array.length,
+           temporaryValue, randomIndex;
+
+       // While there remain elements to shuffle...
+       while (0 !== currentIndex) {
+
+           // Pick a remaining element...
+           randomIndex = Math.floor(Math.random() * currentIndex);
+           currentIndex -= 1;
+           // And swap it with the current element.
+           temporaryValue = array[currentIndex];
+           array[currentIndex] = array[randomIndex];
+           array[randomIndex] = temporaryValue;
+       }
+       return array;
+   }
+
+
+
+
+   function startRound() {
+
+//CODE TO ADD -- this function call
+       newGame();
+
+       //shows the number of correct choices per round
+          for (var i = correct; i >= 0; --i) {
+            let add = 5;
+            console.log(`correct is ${correct}`);
+            // if (i > 5) {
+            //   $(`.col-lg-2 img:nth-of-type(${i-add})`).css('opacity', '1.0');
+            //   add--;
+            //   $(`.col-lg-1 img:nth-of-type(${i})`).css('opacity', '1.0');
+            // }
+
+            $(`.scoreCircles div:nth-of-type(${i})`).css('opacity', '1.0');
+    }
+
+
+       //takes the number of lotRunningScore and displays
+       //that number of dolphins
+      //        for (var i = lotRunningScore; i >= 0; --i) {
+      //      $(`#orange img:nth-of-type(${i})`).css('opacity', '1.0');
+      //  }
+
+
+          displayArr = makeUniqueRandom(mainArr);
+
+            displayArrRight = shuffle(displayArrRight);
+
+            $('#oneLeft').html(displayArr[0].name);
+            $('#twoLeft').html(displayArr[1].name);
+            $('#threeLeft').html(displayArr[2].name);
+            $('#oneRight').html(displayArrRight[0]); //displays image tag
+            $('#twoRight').html(displayArrRight[1]);
+            $('#threeRight').html(displayArrRight[2]);
+
+            //For the love! empty out the arrays!
+            displayArr = [];
+            displayArrRight = [];
+
+        } //end of startRound()
+
+        startRound();
+
+
+
+//CODE TO ADD
+        function newGame() {
+
+            // for (var i = 0; i <= 5; i++) {
+            //   $(`.col-lg-2 img:nth-of-type(${i})`).css('opacity', '0.3');
+            //   $(`.col-lg-1 img:nth-of-type(${i})`).css('opacity', '0.3');
+            // }
+            //
+            // correct = 0;
+        }
+
+
+
+
+$( function() {
+
+    $(".draggable").data({
+        'originalLeft': $(".draggable").css('left'),
+        'originalRotate': $('.draggable').css('transform'),
+        'origionalTop': $(".draggable").css('top')
+
+    });
+
+    $(".playAgain").click(function() {
+
+
+        $(".draggable").css({
+            'left': $(".draggable").data('originalLeft'),
+            'top': $(".draggable").data('origionalTop'),
+            'transform': $('.draggable').data('originalRotate')
+        });
+    });
+
+
+
+  $( ".draggable" ).draggable({ revert: "invalid" });
+
+
+
+  $( ".droppable" ).droppable({
+
+    classes: {
+      "ui-droppable-active": "ui-state-active",
+      "ui-droppable-hover": "ui-state-hover"
+    },
+    drop: function( event, ui ) {
+    //  gets the id of the dragged object:  ui.draggable.attr("id");
+        ui.draggable.addClass('noRotate');
+
+//CODE TO ADD
+    let dragger = ui.draggable.children("img").attr("val");
+    let droppableId = $("p", this).attr("val");
+
+    if (dragger == droppableId) {
+
+        correct++;
+
+      }
+    else {
+        console.log('nope!');
+    }
+
+    }
+  });
+} );
+
+
+
+</script>
+</html>

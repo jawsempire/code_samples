@@ -1,0 +1,29 @@
+[
+	{
+		"name": "Twitter",
+		"firefox": false,
+		"chrome": false,
+		"internetExplorer": true,
+		"edge": true,
+		"ios": true,
+		"android": false
+	},
+	{
+		"name": "_101_Domain",
+		"firefox": true,
+		"chrome": true,
+		"internetExplorer": true,
+		"edge": true,
+		"ios": true,
+		"android": true
+	},
+	{
+		"name": "Pintrest",
+		"firefox": false,
+		"chrome": true,
+		"internetExplorer": false,
+		"edge": false,
+		"ios": false,
+		"android": true
+	}
+]
